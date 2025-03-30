@@ -25,8 +25,8 @@ class _CalculatorState extends State<Calculator> {
         _result = number;
         _shouldClearDisplay = false;
       } else {
-        if (_result == '0') {
-          _result = number;
+        if (_result == '0' || _result == '-') {
+          _result = _result == '-' ? '-$number' : number;
         } else {
           _result += number;
         }
@@ -36,7 +36,17 @@ class _CalculatorState extends State<Calculator> {
   }
 
   void _onOperationPressed(String operation) {
-    if (_result.isEmpty) return;
+    if (_result.isEmpty) {
+      if (operation == '-') {
+        // Если нажали минус и нет числа, начинаем ввод отрицательного числа
+        setState(() {
+          _result = '-';
+          _updateExpression();
+        });
+        return;
+      }
+      return;
+    }
 
     setState(() {
       if (_firstNumber == null) {

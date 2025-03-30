@@ -4,6 +4,7 @@ import 'dart:math' show pow, sqrt;
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'documentation.dart';
 
 class DocumentationService {
   static const String _url =
@@ -63,14 +64,9 @@ class DocumentationScreen extends StatefulWidget {
 class _DocumentationScreenState extends State<DocumentationScreen> {
   final DocumentationService _service = DocumentationService();
   String _content = '';
-  bool _isLoading = true;
+  bool _isLoading = false;
   String? _error;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadDocumentation();
-  }
+  bool _isInitialized = false;
 
   Future<void> _loadDocumentation() async {
     if (!mounted) return;
@@ -86,6 +82,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
         setState(() {
           _content = content;
           _isLoading = false;
+          _isInitialized = true;
         });
       }
     } catch (e) {
@@ -112,35 +109,53 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
           ),
         ],
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _error != null
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Ошибка загрузки документации: $_error',
-                        style: const TextStyle(color: Colors.red),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: _loadDocumentation,
-                        child: const Text('Повторить'),
-                      ),
-                    ],
+      body: !_isInitialized
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Нажмите кнопку обновления для загрузки документации',
+                    style: TextStyle(color: Colors.white),
+                    textAlign: TextAlign.center,
                   ),
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Markdown(
-                      data: _content,
-                      selectable: true,
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _loadDocumentation,
+                    child: const Text('Загрузить документацию'),
+                  ),
+                ],
+              ),
+            )
+          : _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _error != null
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Ошибка загрузки документации: $_error',
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: _loadDocumentation,
+                            child: const Text('Повторить'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Markdown(
+                          data: _content,
+                          selectable: true,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
     );
   }
 }

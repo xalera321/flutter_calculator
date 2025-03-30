@@ -1,67 +1,67 @@
-# Calculator App User Guide
+# Руководство по использованию калькулятора
 
-## Overview
-This calculator app provides a comprehensive set of mathematical operations with a user-friendly interface. It supports basic arithmetic operations, percentage calculations, and advanced mathematical functions.
+## Обзор
+Этот калькулятор предоставляет широкий набор математических операций с удобным пользовательским интерфейсом. Он поддерживает базовые арифметические операции, вычисление процентов и продвинутые математические функции.
 
-## Features
+## Функции
 
-### Basic Operations
-- **Addition (+)**: Add two numbers together
-- **Subtraction (-)**: Subtract one number from another
-- **Multiplication (×)**: Multiply two numbers
-- **Division (÷)**: Divide one number by another
+### Базовые операции
+- **Сложение (+)**: сложение двух чисел
+- **Вычитание (-)**: вычитание одного числа из другого
+- **Умножение (×)**: умножение двух чисел
+- **Деление (÷)**: деление одного числа на другое
 
-### Advanced Operations
-- **Percentage (%)**: Calculate percentages
-  - Example: 100 + 30% = 130
-- **Square Root (√)**: Calculate the square of a number
-- **Power (^)**: Calculate percentage-based power operations
+### Продвинутые операции
+- **Проценты (%)**: вычисление процентов
+  - Пример: 100 + 30% = 130
+- **Квадратный корень (√)**: вычисление квадрата числа
+- **Степень (x^y)**: вычисление степени числа
 
-### Additional Features
-- Decimal point support for floating-point numbers
-- Clear function (C) to reset the calculator
-- Large, easy-to-read display
-- Material Design 3 interface
+### Дополнительные функции
+- Поддержка десятичных чисел
+- Кнопка очистки (C) для сброса калькулятора
+- Большой, легко читаемый дисплей
+- Современный интерфейс Material Design 3
 
-## How to Use
+## Как использовать
 
-1. **Basic Calculations**
-   - Enter the first number using the number pad
-   - Press an operation button (+, -, ×, ÷)
-   - Enter the second number
-   - Press = to see the result
+1. **Базовые вычисления**
+   - Введите первое число с помощью цифровой клавиатуры
+   - Нажмите кнопку операции (+, -, ×, ÷)
+   - Введите второе число
+   - Нажмите = для получения результата
 
-2. **Percentage Calculations**
-   - Enter the base number
-   - Press the % button
-   - The result will be displayed immediately
+2. **Вычисление процентов**
+   - Введите базовое число
+   - Нажмите кнопку %
+   - Результат отобразится сразу
 
-3. **Square Root**
-   - Enter a number
-   - Press the √ button
-   - The square of the number will be displayed
+3. **Квадратный корень**
+   - Введите число
+   - Нажмите кнопку √
+   - Квадрат числа отобразится на экране
 
-4. **Power Operations**
-   - Enter the base number
-   - Press the ^ button
-   - Enter the percentage value
-   - Press = to see the result
+4. **Операции со степенью**
+   - Введите базовое число
+   - Нажмите кнопку x^y
+   - Введите показатель степени
+   - Нажмите = для получения результата
 
-## Tips
-- Use the Clear (C) button to start a new calculation
-- The calculator supports decimal numbers for precise calculations
-- Results are displayed with appropriate precision
-- The display automatically adjusts to show large numbers
+## Советы
+- Используйте кнопку C для начала нового вычисления
+- Калькулятор поддерживает десятичные числа для точных вычислений
+- Результаты отображаются с соответствующей точностью
+- Дисплей автоматически подстраивается под большие числа
 
-## Error Handling
-- Division by zero is prevented
-- Invalid operations are handled gracefully
-- The calculator maintains state between operations
+## Обработка ошибок
+- Предотвращение деления на ноль
+- Корректная обработка некорректных операций
+- Калькулятор сохраняет состояние между операциями
 
-## Technical Requirements
+## Технические требования
 - Flutter SDK
-- Android 5.0 or higher
-- iOS 11.0 or higher
+- Android 5.0 или выше
+- iOS 11.0 или выше
 
-## Support
-For technical support or bug reports, please contact the development team. 
+## Поддержка
+Для технической поддержки или сообщения об ошибках, пожалуйста, свяжитесь с командой разработки. 

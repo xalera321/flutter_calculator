@@ -285,6 +285,17 @@ class _CalculatorState extends State<Calculator> {
         return;
       }
       try {
+        if (_result.startsWith('√')) {
+          double number = double.parse(_result.substring(1));
+          if (number < 0) {
+            throw Exception('Отрицательное число под корнем');
+          }
+          double result = sqrt(number);
+          _result = _formatNumber(result);
+          _expression = '√$number = $result';
+          _clearAll();
+          return;
+        }
         double number = double.parse(_result);
         if (number < 0) {
           throw Exception('Отрицательное число под корнем');

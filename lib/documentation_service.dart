@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class DocumentationService {
   static const String _documentationUrl =
-      'https://xalera321.github.io/flutter_calculator/docs/calculator_documentation.md';
+      'https://xalera321.github.io/flutter_calculator/calculator_documentation.md';
 
   Future<String> getDocumentation() async {
     try {
@@ -18,6 +19,29 @@ class DocumentationService {
     } catch (e) {
       throw Exception('Error loading documentation: $e');
     }
+  }
+}
+
+class CustomElementBuilder extends MarkdownElementBuilder {
+  final BoxDecoration style;
+  final EdgeInsets padding;
+
+  CustomElementBuilder({
+    required this.style,
+    required this.padding,
+  });
+
+  @override
+  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
+    return Container(
+      decoration: style,
+      padding: padding,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Text(
+        element.textContent,
+        style: preferredStyle,
+      ),
+    );
   }
 }
 
@@ -97,15 +121,72 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                   data: _content,
                   selectable: true,
                   styleSheet: MarkdownStyleSheet(
-                    h1: Theme.of(context).textTheme.headlineLarge,
-                    h2: Theme.of(context).textTheme.headlineMedium,
-                    h3: Theme.of(context).textTheme.headlineSmall,
+                    h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                    h2: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                    h3: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontWeight: FontWeight.w600,
+                        ),
                     p: Theme.of(context).textTheme.bodyLarge,
+                    listBullet: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                    listIndent: 24.0,
                     code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          backgroundColor: Colors.grey[200],
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surfaceVariant,
                           fontFamily: 'monospace',
                         ),
+                    blockquote: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontStyle: FontStyle.italic,
+                        ),
+                    blockquoteDecoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .surfaceVariant
+                          .withOpacity(0.3),
+                      border: Border(
+                        left: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
+                          width: 4,
+                        ),
+                      ),
+                    ),
                   ),
+                  padding: const EdgeInsets.all(16.0),
+                  builders: {
+                    'h1': CustomElementBuilder(
+                      style: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                    ),
+                    'h2': CustomElementBuilder(
+                      style: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                    ),
+                    'h3': CustomElementBuilder(
+                      style: BoxDecoration(
+                        color: Theme.of(context).colorScheme.tertiaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                    ),
+                  },
                 ),
     );
   }

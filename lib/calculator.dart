@@ -353,102 +353,77 @@ class _CalculatorState extends State<Calculator> {
             ),
           ),
           Expanded(
-            child: Column(
+            child: GridView.count(
+              crossAxisCount: 4,
+              mainAxisSpacing: 4,
+              crossAxisSpacing: 4,
+              padding: const EdgeInsets.all(8),
+              childAspectRatio: 1.5,
               children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      _buildButton(
-                        '^',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: () => _onOperationPressed('^'),
-                        isOperator: true,
-                      ),
-                      _buildButton(
-                        '√',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: _onSquareRootPressed,
-                        isOperator: true,
-                      ),
-                      _buildButton(
-                        '%',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: _onPercentPressed,
-                        isOperator: true,
-                      ),
-                      _buildButton(
-                        '÷',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: () => _onOperationPressed('÷'),
-                        isOperator: true,
-                      ),
-                    ],
-                  ),
+                _buildButton(
+                  '^',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: () => _onOperationPressed('^'),
+                  isOperator: true,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      _buildButton('7', onPressed: () => _onNumberPressed('7')),
-                      _buildButton('8', onPressed: () => _onNumberPressed('8')),
-                      _buildButton('9', onPressed: () => _onNumberPressed('9')),
-                      _buildButton(
-                        '×',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: () => _onOperationPressed('×'),
-                        isOperator: true,
-                      ),
-                    ],
-                  ),
+                _buildButton(
+                  '√',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: _onSquareRootPressed,
+                  isOperator: true,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      _buildButton('4', onPressed: () => _onNumberPressed('4')),
-                      _buildButton('5', onPressed: () => _onNumberPressed('5')),
-                      _buildButton('6', onPressed: () => _onNumberPressed('6')),
-                      _buildButton(
-                        '-',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: () => _onOperationPressed('-'),
-                        isOperator: true,
-                      ),
-                    ],
-                  ),
+                _buildButton(
+                  '%',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: _onPercentPressed,
+                  isOperator: true,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      _buildButton('1', onPressed: () => _onNumberPressed('1')),
-                      _buildButton('2', onPressed: () => _onNumberPressed('2')),
-                      _buildButton('3', onPressed: () => _onNumberPressed('3')),
-                      _buildButton(
-                        '+',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: () => _onOperationPressed('+'),
-                        isOperator: true,
-                      ),
-                    ],
-                  ),
+                _buildButton(
+                  '÷',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: () => _onOperationPressed('÷'),
+                  isOperator: true,
                 ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      _buildButton('0', onPressed: () => _onNumberPressed('0')),
-                      _buildButton('.', onPressed: _onDecimalPressed),
-                      _buildButton(
-                        'C',
-                        color: const Color(0xFF1A237E),
-                        onPressed: _onClearPressed,
-                        isOperator: true,
-                      ),
-                      _buildButton(
-                        '=',
-                        color: const Color(0xFF64B5F6),
-                        onPressed: _onEqualsPressed,
-                        isOperator: true,
-                      ),
-                    ],
-                  ),
+                _buildButton('7', onPressed: () => _onNumberPressed('7')),
+                _buildButton('8', onPressed: () => _onNumberPressed('8')),
+                _buildButton('9', onPressed: () => _onNumberPressed('9')),
+                _buildButton(
+                  '×',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: () => _onOperationPressed('×'),
+                  isOperator: true,
+                ),
+                _buildButton('4', onPressed: () => _onNumberPressed('4')),
+                _buildButton('5', onPressed: () => _onNumberPressed('5')),
+                _buildButton('6', onPressed: () => _onNumberPressed('6')),
+                _buildButton(
+                  '-',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: () => _onOperationPressed('-'),
+                  isOperator: true,
+                ),
+                _buildButton('1', onPressed: () => _onNumberPressed('1')),
+                _buildButton('2', onPressed: () => _onNumberPressed('2')),
+                _buildButton('3', onPressed: () => _onNumberPressed('3')),
+                _buildButton(
+                  '+',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: () => _onOperationPressed('+'),
+                  isOperator: true,
+                ),
+                _buildButton('0', onPressed: () => _onNumberPressed('0')),
+                _buildButton('.', onPressed: _onDecimalPressed),
+                _buildButton(
+                  'C',
+                  color: const Color(0xFF1A237E),
+                  onPressed: _onClearPressed,
+                  isOperator: true,
+                ),
+                _buildButton(
+                  '=',
+                  color: const Color(0xFF64B5F6),
+                  onPressed: _onEqualsPressed,
+                  isOperator: true,
                 ),
               ],
             ),

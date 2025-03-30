@@ -124,33 +124,34 @@ class _CalculatorState extends State<Calculator> {
       // Добавляем последнее число и операцию
       double lastNumber;
       if (currentNumber.endsWith('%')) {
-        lastNumber = double.parse(currentNumber.replaceAll('%', '')) / 100;
+        lastNumber = double.parse(currentNumber.replaceAll('%', ''));
+        result += (result * lastNumber / 100);
       } else {
         lastNumber = double.parse(currentNumber);
-      }
-      String lastOperation = _operations.last;
+        String lastOperation = _operations.last;
 
-      switch (lastOperation) {
-        case '+':
-          result += lastNumber;
-          break;
-        case '-':
-          result -= lastNumber;
-          break;
-        case '×':
-          result *= lastNumber;
-          break;
-        case '÷':
-          if (lastNumber == 0) {
-            _result = 'Ошибка';
-            _clearAll();
-            return;
-          }
-          result /= lastNumber;
-          break;
-        case '%':
-          result *= lastNumber;
-          break;
+        switch (lastOperation) {
+          case '+':
+            result += lastNumber;
+            break;
+          case '-':
+            result -= lastNumber;
+            break;
+          case '×':
+            result *= lastNumber;
+            break;
+          case '÷':
+            if (lastNumber == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result /= lastNumber;
+            break;
+          case '%':
+            result += (result * lastNumber / 100);
+            break;
+        }
       }
 
       _result = _formatNumber(result);

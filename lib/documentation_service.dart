@@ -60,6 +60,8 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Документация'),
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -93,10 +95,65 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                     ],
                   ),
                 )
-              : Markdown(
-                  data: _content,
-                  selectable: true,
-                  padding: const EdgeInsets.all(16.0),
+              : Container(
+                  color: Colors.black,
+                  child: Markdown(
+                    data: _content,
+                    selectable: true,
+                    padding: const EdgeInsets.all(16.0),
+                    styleSheet: MarkdownStyleSheet(
+                      h1: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.5,
+                      ),
+                      h2: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1.4,
+                      ),
+                      h3: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                        height: 1.3,
+                      ),
+                      p: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        height: 1.6,
+                      ),
+                      listBullet: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                      listIndent: 24.0,
+                      code: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        backgroundColor: Color(0xFF333333),
+                        fontFamily: 'monospace',
+                        height: 1.4,
+                      ),
+                      blockquote: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white70,
+                        fontStyle: FontStyle.italic,
+                        height: 1.6,
+                      ),
+                      blockquoteDecoration: const BoxDecoration(
+                        color: Color(0xFF333333),
+                        border: Border(
+                          left: BorderSide(
+                            color: Colors.white,
+                            width: 4,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
     );
   }

@@ -86,6 +86,25 @@ class _CalculatorState extends State<Calculator> {
 
   void _calculateResult() {
     if (_result.isEmpty || _firstNumber == null || _operation == null) {
+      // Если нет операции, но есть квадратный корень, вычисляем его
+      if (_result.startsWith('√')) {
+        try {
+          double number = double.parse(_result.substring(1));
+          if (number < 0) {
+            throw Exception('Отрицательное число под корнем');
+          }
+          double result = sqrt(number);
+          _result = _formatNumber(result);
+          _expression = '√$number = $result';
+          _clearAll();
+          return;
+        } catch (e) {
+          _result = 'Ошибка';
+          _expression = '';
+          _clearAll();
+          return;
+        }
+      }
       return;
     }
 

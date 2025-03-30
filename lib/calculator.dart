@@ -325,8 +325,7 @@ class _CalculatorState extends State<Calculator> {
           }
           double result = sqrt(number);
           _result = _formatNumber(result);
-          _expression =
-              '${_result.startsWith('√') ? _result : '√$number'} = $result';
+          _expression = '√$number = $result';
           _clearAll();
           return;
         }

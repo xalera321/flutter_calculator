@@ -81,32 +81,56 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                     ],
                   ),
                 )
-              : Markdown(
-                  data: _content,
-                  selectable: true,
-                  styleSheet: MarkdownStyleSheet(
-                    h1: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    h2: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                    p: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
-                    code: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.white,
-                      backgroundColor: Colors.grey,
-                    ),
-                    codeblockDecoration: BoxDecoration(
-                      color: Colors.grey[800],
-                      borderRadius: BorderRadius.circular(4),
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Markdown(
+                      data: _content,
+                      selectable: true,
+                      styleSheet: MarkdownStyleSheet(
+                        h1: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        h2: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        h3: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                        p: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                        listBullet: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
+                        ),
+                        listIndent: 24.0,
+                        code: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          backgroundColor: Colors.grey,
+                        ),
+                        codeblockDecoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        blockquote: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                          fontStyle: FontStyle.italic,
+                        ),
+                        blockquoteDecoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
                     ),
                   ),
                 ),

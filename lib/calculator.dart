@@ -142,7 +142,50 @@ class _CalculatorState extends State<Calculator> {
         }
         result = sqrt(number);
       } else if (_numbers[0].endsWith('%')) {
-        result = double.parse(_numbers[0].substring(0, _numbers[0].length - 1));
+        // Если первое число - процент, нам нужно дождаться второго числа
+        double percentValue =
+            double.parse(_numbers[0].substring(0, _numbers[0].length - 1));
+        // Получаем второе число
+        double nextNumber;
+        if (_numbers[1].startsWith('√')) {
+          nextNumber = sqrt(double.parse(_numbers[1].substring(1)));
+        } else if (_numbers[1].endsWith('%')) {
+          nextNumber =
+              double.parse(_numbers[1].substring(0, _numbers[1].length - 1));
+        } else {
+          nextNumber = double.parse(_numbers[1]);
+        }
+        // Вычисляем процент от второго числа
+        result = nextNumber;
+        double percentAmount = (nextNumber * percentValue) / 100;
+
+        // В зависимости от операции применяем процент
+        String operation = _operations[0];
+        switch (operation) {
+          case '+':
+            result = nextNumber + percentAmount;
+            break;
+          case '-':
+            result = nextNumber - percentAmount;
+            break;
+          case '×':
+            result = percentAmount;
+            break;
+          case '÷':
+            if (percentValue == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result = (nextNumber * 100) / percentValue;
+            break;
+          default:
+            result = nextNumber + percentAmount;
+        }
+
+        // Пропускаем следующую итерацию, так как мы уже обработали оба числа
+        _numbers.removeAt(1);
+        _operations.removeAt(0);
       } else {
         result = double.parse(_numbers[0]);
       }

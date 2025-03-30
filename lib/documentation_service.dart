@@ -180,8 +180,9 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                         ),
                     listIndent: 24.0,
                     code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surfaceVariant,
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           fontFamily: 'monospace',
                         ),
                     blockquote: Theme.of(context).textTheme.bodyLarge?.copyWith(
@@ -191,8 +192,8 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                     blockquoteDecoration: BoxDecoration(
                       color: Theme.of(context)
                           .colorScheme
-                          .surfaceVariant
-                          .withOpacity(0.3),
+                          .surfaceContainerHighest
+                          .withValues(alpha: 77),
                       border: Border(
                         left: BorderSide(
                           color: Theme.of(context).colorScheme.primary,

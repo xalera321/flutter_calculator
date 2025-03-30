@@ -1,164 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:math_expressions/math_expressions.dart';
 import 'dart:math' show pow, sqrt;
-import 'package:http/http.dart' as http;
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'documentation.dart';
-
-class DocumentationService {
-  static const String _url =
-      'https://xalera321.github.io/flutter_calculator/calculator_documentation.md';
-  static const String _cacheKey = 'documentation_cache';
-  static const Duration _cacheDuration = Duration(hours: 24);
-
-  Future<String> getDocumentation() async {
-    try {
-      // Try to get cached content first
-      final prefs = await SharedPreferences.getInstance();
-      final cachedContent = prefs.getString(_cacheKey);
-      final lastUpdate = prefs.getInt('${_cacheKey}_timestamp');
-
-      if (cachedContent != null && lastUpdate != null) {
-        final cacheAge = DateTime.now().millisecondsSinceEpoch - lastUpdate;
-        if (cacheAge < _cacheDuration.inMilliseconds) {
-          return cachedContent;
-        }
-      }
-
-      // If no cache or cache is old, try to fetch from network
-      final response = await http.get(Uri.parse(_url));
-      if (response.statusCode == 200) {
-        final content = response.body;
-
-        // Cache the new content
-        await prefs.setString(_cacheKey, content);
-        await prefs.setInt(
-            '${_cacheKey}_timestamp', DateTime.now().millisecondsSinceEpoch);
-
-        return content;
-      } else {
-        throw Exception('Failed to load documentation: ${response.statusCode}');
-      }
-    } catch (e) {
-      // If network request fails, try to return cached content
-      final prefs = await SharedPreferences.getInstance();
-      final cachedContent = prefs.getString(_cacheKey);
-
-      if (cachedContent != null) {
-        return cachedContent;
-      }
-
-      throw Exception('Error loading documentation: $e');
-    }
-  }
-}
-
-class DocumentationScreen extends StatefulWidget {
-  const DocumentationScreen({super.key});
-
-  @override
-  State<DocumentationScreen> createState() => _DocumentationScreenState();
-}
-
-class _DocumentationScreenState extends State<DocumentationScreen> {
-  final DocumentationService _service = DocumentationService();
-  String _content = '';
-  bool _isLoading = false;
-  String? _error;
-  bool _isInitialized = false;
-
-  Future<void> _loadDocumentation() async {
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = true;
-      _error = null;
-    });
-
-    try {
-      final content = await _service.getDocumentation();
-      if (mounted) {
-        setState(() {
-          _content = content;
-          _isLoading = false;
-          _isInitialized = true;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _error = e.toString();
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
-        title: const Text('Документация'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadDocumentation,
-          ),
-        ],
-      ),
-      body: !_isInitialized
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Нажмите кнопку обновления для загрузки документации',
-                    style: TextStyle(color: Colors.white),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _loadDocumentation,
-                    child: const Text('Загрузить документацию'),
-                  ),
-                ],
-              ),
-            )
-          : _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _error != null
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Ошибка загрузки документации: $_error',
-                            style: const TextStyle(color: Colors.red),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadDocumentation,
-                            child: const Text('Повторить'),
-                          ),
-                        ],
-                      ),
-                    )
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Markdown(
-                          data: _content,
-                          selectable: true,
-                        ),
-                      ),
-                    ),
-    );
-  }
-}
+import 'documentation_service.dart';
 
 class Calculator extends StatefulWidget {
   const Calculator({super.key});
@@ -168,11 +11,12 @@ class Calculator extends StatefulWidget {
 }
 
 class _CalculatorState extends State<Calculator> {
-  String _expression = '';
   String _result = '0';
-  String _operation = '';
-  double? _firstNumber;
+  String _expression = '';
+  String? _operation;
+  String? _firstNumber;
   bool _shouldClearDisplay = false;
+  String _currentNumber = '';
 
   void _onNumberPressed(String number) {
     setState(() {
@@ -186,29 +30,63 @@ class _CalculatorState extends State<Calculator> {
           _result += number;
         }
       }
-      if (_operation.isNotEmpty) {
-        _updateExpression();
-      }
     });
   }
 
-  void _updateExpression() {
-    if (_operation.isNotEmpty && _firstNumber != null) {
-      String formattedFirstNumber =
-          _firstNumber!.truncateToDouble() == _firstNumber!
-              ? _firstNumber!.toInt().toString()
-              : _firstNumber!.toString();
-      String formattedResult = _result;
-      if (!_result.endsWith('%')) {
-        formattedResult =
-            double.parse(_result).truncateToDouble() == double.parse(_result)
-                ? double.parse(_result).toInt().toString()
-                : _result;
-      }
-      _expression = '$formattedFirstNumber$_operation$formattedResult';
-    } else {
-      _expression = _result;
+  void _onOperationPressed(String operation) {
+    if (_result.isEmpty) return;
+
+    setState(() {
+      _operation = operation;
+      _firstNumber = _result;
+      _result = '';
+      _expression = '$_firstNumber $_operation';
+    });
+  }
+
+  void _calculateResult() {
+    if (_result.isEmpty || _firstNumber == null || _operation == null) {
+      return;
     }
+
+    setState(() {
+      _expression = '$_firstNumber $_operation $_result =';
+      double result;
+      double first = double.parse(_firstNumber!);
+      double second = double.parse(_result);
+
+      switch (_operation) {
+        case '+':
+          result = first + second;
+          break;
+        case '-':
+          result = first - second;
+          break;
+        case '×':
+          result = first * second;
+          break;
+        case '÷':
+          if (second == 0) {
+            _result = 'Ошибка';
+            _firstNumber = null;
+            _operation = null;
+            _expression = '';
+            return;
+          }
+          result = first / second;
+          break;
+        case '%':
+          result = first * (second / 100);
+          break;
+        default:
+          return;
+      }
+
+      _result = _formatNumber(result);
+      _firstNumber = null;
+      _operation = null;
+      _expression = '';
+    });
   }
 
   String _formatNumber(double number) {
@@ -225,118 +103,6 @@ class _CalculatorState extends State<Calculator> {
     return number.toStringAsFixed(10).replaceAll(RegExp(r'\.?0*$'), '');
   }
 
-  void _onOperationPressed(String operation) {
-    setState(() {
-      try {
-        if (_firstNumber == null) {
-          // Если число заканчивается на %, вычисляем процент от числа
-          if (_result.endsWith('%')) {
-            double number = double.parse(_result.replaceAll('%', ''));
-            _firstNumber = number / 100;
-          } else {
-            _firstNumber = double.parse(_result);
-          }
-        } else {
-          _calculateResult();
-        }
-        _operation = operation;
-        _shouldClearDisplay = true;
-        String formattedFirstNumber = _formatNumber(_firstNumber!);
-        _expression = '$formattedFirstNumber$_operation';
-      } catch (e) {
-        _result = 'Ошибка';
-        _expression = '';
-        _firstNumber = null;
-        _operation = '';
-        _shouldClearDisplay = true;
-      }
-    });
-  }
-
-  void _calculateResult() {
-    if (_firstNumber == null) {
-      try {
-        // Если нет первого числа, просто вычисляем процент
-        if (_result.endsWith('%')) {
-          double number = double.parse(_result.replaceAll('%', ''));
-          double result = number / 100;
-          setState(() {
-            _result = _formatNumber(result);
-            _shouldClearDisplay = true;
-            _expression = _result;
-          });
-          return;
-        }
-      } catch (e) {
-        setState(() {
-          _result = 'Ошибка';
-          _expression = '';
-          _firstNumber = null;
-          _operation = '';
-          _shouldClearDisplay = true;
-        });
-        return;
-      }
-      return;
-    }
-
-    if (_operation.isEmpty) return;
-
-    try {
-      double secondNumber;
-      if (_result.endsWith('%')) {
-        // Если число заканчивается на %, вычисляем процент от первого числа
-        secondNumber = double.parse(_result.replaceAll('%', ''));
-        double result = _firstNumber! + (_firstNumber! * secondNumber / 100);
-        _result = _formatNumber(result);
-      } else {
-        // Обычные вычисления
-        secondNumber = double.parse(_result);
-        double result;
-
-        switch (_operation) {
-          case '+':
-            result = _firstNumber! + secondNumber;
-            break;
-          case '-':
-            result = _firstNumber! - secondNumber;
-            break;
-          case '×':
-            result = _firstNumber! * secondNumber;
-            break;
-          case '÷':
-            if (secondNumber == 0) {
-              throw Exception('Деление на ноль');
-            }
-            result = _firstNumber! / secondNumber;
-            break;
-          case '^':
-            result = pow(_firstNumber!, secondNumber).toDouble();
-            break;
-          default:
-            return;
-        }
-
-        _result = _formatNumber(result);
-      }
-
-      setState(() {
-        _firstNumber = double.parse(_result);
-        _operation = '';
-        _shouldClearDisplay = true;
-        _expression = _result;
-      });
-    } catch (e) {
-      setState(() {
-        _result = 'Ошибка';
-        _expression = '';
-        _firstNumber = null;
-        _operation = '';
-        _shouldClearDisplay = true;
-      });
-    }
-  }
-
   void _onEqualsPressed() {
     _calculateResult();
   }
@@ -345,7 +111,7 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       _result = '0';
       _expression = '';
-      _operation = '';
+      _operation = null;
       _firstNumber = null;
       _shouldClearDisplay = false;
     });
@@ -355,32 +121,30 @@ class _CalculatorState extends State<Calculator> {
     if (!_result.contains('.')) {
       setState(() {
         _result += '.';
-        _updateExpression();
+        _expression = _result;
       });
     }
   }
 
   void _onPercentPressed() {
+    if (_result.isEmpty) return;
+
     setState(() {
-      try {
-        if (_operation.isNotEmpty) {
-          // Если есть операция, добавляем % к текущему числу
-          _result += '%';
-          _updateExpression();
-        } else {
-          // Если нет операции, вычисляем процент от текущего результата
+      if (_operation != null) {
+        // Если есть операция, добавляем % к текущему числу
+        _result += '%';
+        _expression = _result;
+      } else {
+        // Если нет операции, вычисляем процент от текущего результата
+        try {
           double number = double.parse(_result);
           double result = number / 100;
           _result = _formatNumber(result);
-          _shouldClearDisplay = true;
           _expression = _result;
+        } catch (e) {
+          _result = 'Ошибка';
+          _expression = '';
         }
-      } catch (e) {
-        _result = 'Ошибка';
-        _expression = '';
-        _firstNumber = null;
-        _operation = '';
-        _shouldClearDisplay = true;
       }
     });
   }
@@ -395,12 +159,12 @@ class _CalculatorState extends State<Calculator> {
         double result = sqrt(number);
         _result = _formatNumber(result);
         _shouldClearDisplay = true;
-        _updateExpression();
+        _expression = _result;
       } catch (e) {
         _result = 'Ошибка';
         _expression = '';
         _firstNumber = null;
-        _operation = '';
+        _operation = null;
         _shouldClearDisplay = true;
       }
     });

@@ -18,32 +18,29 @@ class _CalculatorState extends State<Calculator> {
   bool _shouldClearDisplay = false;
   List<String> _numbers = [];
   List<String> _operations = [];
+  bool _isNegative = false;
 
   void _onNumberPressed(String number) {
     setState(() {
       if (_shouldClearDisplay) {
-        _result = number;
+        _result = _isNegative ? '-$number' : number;
         _shouldClearDisplay = false;
       } else {
         if (_result == '0' || _result == '-') {
-          _result = _result == '-' ? '-$number' : number;
+          _result = _isNegative ? '-$number' : number;
         } else {
           _result += number;
         }
       }
-      if (_operation == null) {
-        _expression = _result;
-      } else {
-        _updateExpression();
-      }
+      _expression = _result;
     });
   }
 
   void _onOperationPressed(String operation) {
     if (_result.isEmpty || _result == '0') {
       if (operation == '-') {
-        // Если нажали минус и нет числа или ноль, начинаем ввод отрицательного числа
         setState(() {
+          _isNegative = true;
           _result = '-';
           _expression = '-';
         });
@@ -62,6 +59,7 @@ class _CalculatorState extends State<Calculator> {
       _operation = operation;
       _operations.add(operation);
       _result = '';
+      _isNegative = false;
       _updateExpression();
     });
   }
@@ -181,6 +179,7 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       _result = '0';
       _expression = '';
+      _isNegative = false;
       _clearAll();
     });
   }

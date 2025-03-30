@@ -26,7 +26,7 @@ class _CalculatorState extends State<Calculator> {
         _result = _isNegative ? '-$number' : number;
         _shouldClearDisplay = false;
       } else {
-        if (_result == '0' || _result == '-') {
+        if (_result == '0' || _result == '-' || _result == '√') {
           _result = _isNegative ? '-$number' : number;
         } else {
           _result += number;
@@ -126,6 +126,38 @@ class _CalculatorState extends State<Calculator> {
       if (currentNumber.endsWith('%')) {
         lastNumber = double.parse(currentNumber.replaceAll('%', ''));
         result += (result * lastNumber / 100);
+      } else if (currentNumber.startsWith('√')) {
+        lastNumber = double.parse(currentNumber.substring(1));
+        if (lastNumber < 0) {
+          _result = 'Ошибка';
+          _clearAll();
+          return;
+        }
+        lastNumber = sqrt(lastNumber);
+        String lastOperation = _operations.last;
+
+        switch (lastOperation) {
+          case '+':
+            result += lastNumber;
+            break;
+          case '-':
+            result -= lastNumber;
+            break;
+          case '×':
+            result *= lastNumber;
+            break;
+          case '÷':
+            if (lastNumber == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result /= lastNumber;
+            break;
+          case '%':
+            result += (result * lastNumber / 100);
+            break;
+        }
       } else {
         lastNumber = double.parse(currentNumber);
         String lastOperation = _operations.last;
@@ -226,6 +258,11 @@ class _CalculatorState extends State<Calculator> {
 
   void _onSquareRootPressed() {
     setState(() {
+      if (_result.isEmpty || _result == '0') {
+        _result = '√';
+        _expression = '√';
+        return;
+      }
       try {
         double number = double.parse(_result);
         if (number < 0) {
@@ -234,7 +271,7 @@ class _CalculatorState extends State<Calculator> {
         double result = sqrt(number);
         _result = _formatNumber(result);
         _shouldClearDisplay = true;
-        _expression = _result;
+        _updateExpression();
       } catch (e) {
         _result = 'Ошибка';
         _expression = '';

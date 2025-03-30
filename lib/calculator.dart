@@ -32,7 +32,11 @@ class _CalculatorState extends State<Calculator> {
           _result += number;
         }
       }
-      _expression = _result;
+      if (_operation != null) {
+        _updateExpression();
+      } else {
+        _expression = _result;
+      }
     });
   }
 

@@ -57,8 +57,14 @@ class _CalculatorState extends State<Calculator> {
 
     setState(() {
       if (_firstNumber == null) {
-        _firstNumber = _result;
-        _numbers.add(_result);
+        if (_result.endsWith('%')) {
+          // Если первое число заканчивается на %, сохраняем его как есть
+          _firstNumber = _result;
+          _numbers.add(_result);
+        } else {
+          _firstNumber = _result;
+          _numbers.add(_result);
+        }
       } else {
         _numbers.add(_result);
       }

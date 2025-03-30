@@ -122,7 +122,12 @@ class _CalculatorState extends State<Calculator> {
       }
 
       // Добавляем последнее число и операцию
-      double lastNumber = double.parse(currentNumber);
+      double lastNumber;
+      if (currentNumber.endsWith('%')) {
+        lastNumber = double.parse(currentNumber.replaceAll('%', '')) / 100;
+      } else {
+        lastNumber = double.parse(currentNumber);
+      }
       String lastOperation = _operations.last;
 
       switch (lastOperation) {
@@ -144,7 +149,7 @@ class _CalculatorState extends State<Calculator> {
           result /= lastNumber;
           break;
         case '%':
-          result *= (lastNumber / 100);
+          result *= lastNumber;
           break;
       }
 

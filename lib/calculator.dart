@@ -72,7 +72,6 @@ class _CalculatorState extends State<Calculator> {
     }
 
     setState(() {
-      _numbers.add(_result);
       _updateExpression();
       _expression += ' =';
 

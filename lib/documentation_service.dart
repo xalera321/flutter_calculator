@@ -2,21 +2,51 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:shared_preferences.dart';
 
 class DocumentationService {
-  static const String _documentationUrl =
+  static const String _url =
       'https://xalera321.github.io/flutter_calculator/calculator_documentation.md';
+  static const String _cacheKey = 'documentation_cache';
+  static const Duration _cacheDuration = Duration(hours: 24);
 
   Future<String> getDocumentation() async {
     try {
-      final response = await http.get(Uri.parse(_documentationUrl));
+      // Try to get cached content first
+      final prefs = await SharedPreferences.getInstance();
+      final cachedContent = prefs.getString(_cacheKey);
+      final lastUpdate = prefs.getInt('${_cacheKey}_timestamp');
 
+      if (cachedContent != null && lastUpdate != null) {
+        final cacheAge = DateTime.now().millisecondsSinceEpoch - lastUpdate;
+        if (cacheAge < _cacheDuration.inMilliseconds) {
+          return cachedContent;
+        }
+      }
+
+      // If no cache or cache is old, try to fetch from network
+      final response = await http.get(Uri.parse(_url));
       if (response.statusCode == 200) {
-        return response.body;
+        final content = response.body;
+
+        // Cache the new content
+        await prefs.setString(_cacheKey, content);
+        await prefs.setInt(
+            '${_cacheKey}_timestamp', DateTime.now().millisecondsSinceEpoch);
+
+        return content;
       } else {
         throw Exception('Failed to load documentation: ${response.statusCode}');
       }
     } catch (e) {
+      // If network request fails, try to return cached content
+      final prefs = await SharedPreferences.getInstance();
+      final cachedContent = prefs.getString(_cacheKey);
+
+      if (cachedContent != null) {
+        return cachedContent;
+      }
+
       throw Exception('Error loading documentation: $e');
     }
   }
@@ -65,6 +95,13 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
   }
 
   Future<void> _loadDocumentation() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _error = null;
+    });
+
     try {
       final content = await _documentationService.getDocumentation();
       if (mounted) {

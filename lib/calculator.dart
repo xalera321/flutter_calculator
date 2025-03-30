@@ -60,23 +60,7 @@ class _CalculatorState extends State<Calculator> {
         _firstNumber = _result;
         _numbers.add(_result);
       } else {
-        // Если число начинается с √, вычисляем его значение
-        if (_result.startsWith('√')) {
-          try {
-            double number = double.parse(_result.substring(1));
-            if (number < 0) {
-              throw Exception('Отрицательное число под корнем');
-            }
-            _numbers.add(sqrt(number).toString());
-          } catch (e) {
-            _result = 'Ошибка';
-            _expression = '';
-            _clearAll();
-            return;
-          }
-        } else {
-          _numbers.add(_result);
-        }
+        _numbers.add(_result);
       }
       _operation = operation;
       _operations.add(operation);

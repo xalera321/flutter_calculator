@@ -174,7 +174,7 @@ class _CalculatorState extends State<Calculator> {
             result /= number;
             break;
           case '%':
-            result += (result * number / 100);
+            result = (result * number) / 100;
             break;
           case '^':
             result = pow(result, number).toDouble();
@@ -186,7 +186,32 @@ class _CalculatorState extends State<Calculator> {
       double lastNumber;
       if (currentNumber.endsWith('%')) {
         lastNumber = double.parse(currentNumber.replaceAll('%', ''));
-        result += (result * lastNumber / 100);
+        String lastOperation = _operations.last;
+        switch (lastOperation) {
+          case '+':
+            result += (result * lastNumber / 100);
+            break;
+          case '-':
+            result -= (result * lastNumber / 100);
+            break;
+          case '×':
+            result = (result * lastNumber) / 100;
+            break;
+          case '÷':
+            if (lastNumber == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result = (result * 100) / lastNumber;
+            break;
+          case '%':
+            result = (result * lastNumber) / 100;
+            break;
+          case '^':
+            result = pow(result, lastNumber).toDouble();
+            break;
+        }
       } else if (currentNumber.startsWith('√')) {
         lastNumber = double.parse(currentNumber.substring(1));
         if (lastNumber < 0) {
@@ -216,7 +241,7 @@ class _CalculatorState extends State<Calculator> {
             result /= lastNumber;
             break;
           case '%':
-            result += (result * lastNumber / 100);
+            result = (result * lastNumber) / 100;
             break;
           case '^':
             result = pow(result, lastNumber).toDouble();
@@ -245,7 +270,7 @@ class _CalculatorState extends State<Calculator> {
             result /= lastNumber;
             break;
           case '%':
-            result += (result * lastNumber / 100);
+            result = (result * lastNumber) / 100;
             break;
           case '^':
             result = pow(result, lastNumber).toDouble();

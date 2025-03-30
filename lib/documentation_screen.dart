@@ -118,7 +118,9 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                           backgroundColor: Colors.grey,
                         ),
                         codeblockDecoration: BoxDecoration(
-                          color: Colors.grey[800],
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                         blockquote: const TextStyle(
@@ -127,7 +129,9 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                           fontStyle: FontStyle.italic,
                         ),
                         blockquoteDecoration: BoxDecoration(
-                          color: Colors.grey[800],
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),

@@ -67,15 +67,19 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
   Future<void> _loadDocumentation() async {
     try {
       final content = await _documentationService.getDocumentation();
-      setState(() {
-        _content = content;
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _content = content;
+          _isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _isLoading = false;
+        });
+      }
     }
   }
 

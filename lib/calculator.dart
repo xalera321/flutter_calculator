@@ -36,12 +36,12 @@ class _CalculatorState extends State<Calculator> {
   }
 
   void _onOperationPressed(String operation) {
-    if (_result.isEmpty) {
+    if (_result.isEmpty || _result == '0') {
       if (operation == '-') {
-        // Если нажали минус и нет числа, начинаем ввод отрицательного числа
+        // Если нажали минус и нет числа или ноль, начинаем ввод отрицательного числа
         setState(() {
           _result = '-';
-          _updateExpression();
+          _expression = '-';
         });
         return;
       }

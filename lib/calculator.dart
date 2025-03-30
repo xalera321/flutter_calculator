@@ -276,7 +276,11 @@ class _CalculatorState extends State<Calculator> {
       _result = '0';
       _expression = '';
       _isNegative = false;
-      _clearAll();
+      _firstNumber = null;
+      _operation = null;
+      _numbers.clear();
+      _operations.clear();
+      _shouldClearDisplay = true;
     });
   }
 
@@ -315,6 +319,7 @@ class _CalculatorState extends State<Calculator> {
       if (_result.isEmpty || _result == '0') {
         _result = '√';
         _expression = '√';
+        _shouldClearDisplay = false;
         return;
       }
       try {

@@ -124,12 +124,13 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
         title: const Text('Документация'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: _loadDocumentation,
-            tooltip: 'Обновить',
           ),
         ],
       ),
@@ -141,13 +142,8 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Ошибка загрузки документации:',
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _error!,
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        'Ошибка загрузки документации: $_error',
+                        style: const TextStyle(color: Colors.red),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 16),
@@ -158,76 +154,108 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                     ],
                   ),
                 )
-              : Markdown(
-                  data: _content,
-                  selectable: true,
-                  styleSheet: MarkdownStyleSheet(
-                    h1: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+              : SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Markdown(
+                      data: _content,
+                      selectable: true,
+                      styleSheet: MarkdownStyleSheet(
+                        h1: const TextStyle(
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
-                    h2: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+                        h2: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        h3: const TextStyle(
+                          fontSize: 18,
                           fontWeight: FontWeight.w600,
+                          color: Colors.white,
                         ),
-                    h3: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontWeight: FontWeight.w600,
+                        p: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
                         ),
-                    p: Theme.of(context).textTheme.bodyLarge,
-                    listBullet: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.primary,
+                        listBullet: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white,
                         ),
-                    listIndent: 24.0,
-                    code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          backgroundColor:
-                              Theme.of(context).colorScheme.surfaceVariant,
-                          fontFamily: 'monospace',
+                        listIndent: 24.0,
+                        code: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          backgroundColor: Colors.grey,
                         ),
-                    blockquote: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
+                        codeblockDecoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        blockquote: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
                           fontStyle: FontStyle.italic,
                         ),
-                    blockquoteDecoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .surfaceVariant
-                          .withOpacity(0.3),
-                      border: Border(
-                        left: BorderSide(
-                          color: Theme.of(context).colorScheme.primary,
-                          width: 4,
+                        blockquoteDecoration: BoxDecoration(
+                          color: Colors.grey[800],
+                          borderRadius: BorderRadius.circular(4),
                         ),
                       ),
+                      builders: {
+                        'h1': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        'h2': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        'h3': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        'ul': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        'ol': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                        ),
+                        'li': CustomElementBuilder(
+                          style: BoxDecoration(
+                            color: Colors.grey[800],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 4),
+                        ),
+                      },
                     ),
                   ),
-                  padding: const EdgeInsets.all(16.0),
-                  builders: {
-                    'h1': CustomElementBuilder(
-                      style: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                    ),
-                    'h2': CustomElementBuilder(
-                      style: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                    ),
-                    'h3': CustomElementBuilder(
-                      style: BoxDecoration(
-                        color: Theme.of(context).colorScheme.tertiaryContainer,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                    ),
-                  },
                 ),
     );
   }

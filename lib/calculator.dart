@@ -262,29 +262,26 @@ class _CalculatorState extends State<Calculator> {
           style: ElevatedButton.styleFrom(
             backgroundColor: color ?? const Color(0xFF333333),
             foregroundColor: Colors.white,
-            padding:
-                isOperator
-                    ? const EdgeInsets.all(
-                      20.0,
-                    ) // Увеличиваем padding для операторов
-                    : const EdgeInsets.all(24.0), // Обычный padding для цифр
-            shape:
-                isOperator
-                    ? RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        24,
-                      ), // Сохраняем радиус закругления
-                    )
-                    : CircleBorder(),
+            padding: isOperator
+                ? const EdgeInsets.all(
+                    20.0,
+                  ) // Увеличиваем padding для операторов
+                : const EdgeInsets.all(24.0), // Обычный padding для цифр
+            shape: isOperator
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                      24,
+                    ), // Сохраняем радиус закругления
+                  )
+                : CircleBorder(),
           ),
           onPressed: onPressed,
           child: Text(
             text,
             style: TextStyle(
-              fontSize:
-                  isOperator
-                      ? 30.0
-                      : 32.0, // Увеличиваем размер шрифта для операторов
+              fontSize: isOperator
+                  ? 30.0
+                  : 32.0, // Увеличиваем размер шрифта для операторов
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -296,10 +293,10 @@ class _CalculatorState extends State<Calculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
+        title: const Text(''),
         backgroundColor: Colors.black,
-        title: const Text('Калькулятор'),
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -311,10 +308,10 @@ class _CalculatorState extends State<Calculator> {
                 ),
               );
             },
-            tooltip: 'Помощь',
           ),
         ],
       ),
+      backgroundColor: Colors.black,
       body: Column(
         children: [
           Container(

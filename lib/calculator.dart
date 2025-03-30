@@ -176,6 +176,9 @@ class _CalculatorState extends State<Calculator> {
           case '%':
             result += (result * number / 100);
             break;
+          case '^':
+            result = pow(result, number).toDouble();
+            break;
         }
       }
 
@@ -215,6 +218,9 @@ class _CalculatorState extends State<Calculator> {
           case '%':
             result += (result * lastNumber / 100);
             break;
+          case '^':
+            result = pow(result, lastNumber).toDouble();
+            break;
         }
       } else {
         lastNumber = double.parse(currentNumber);
@@ -240,6 +246,9 @@ class _CalculatorState extends State<Calculator> {
             break;
           case '%':
             result += (result * lastNumber / 100);
+            break;
+          case '^':
+            result = pow(result, lastNumber).toDouble();
             break;
         }
       }

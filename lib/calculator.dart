@@ -361,15 +361,8 @@ class _CalculatorState extends State<Calculator> {
         _result += '%';
         _updateExpression();
       } else {
-        try {
-          double number = double.parse(_result);
-          double result = number / 100;
-          _result = _formatNumber(result);
-          _updateExpression();
-        } catch (e) {
-          _result = 'Ошибка';
-          _expression = '';
-        }
+        _result += '%';
+        _updateExpression();
       }
     });
   }

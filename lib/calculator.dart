@@ -57,25 +57,8 @@ class _CalculatorState extends State<Calculator> {
 
     setState(() {
       if (_firstNumber == null) {
-        // Если число начинается с √, вычисляем его значение
-        if (_result.startsWith('√')) {
-          try {
-            double number = double.parse(_result.substring(1));
-            if (number < 0) {
-              throw Exception('Отрицательное число под корнем');
-            }
-            _firstNumber = sqrt(number).toString();
-            _numbers.add(_firstNumber!);
-          } catch (e) {
-            _result = 'Ошибка';
-            _expression = '';
-            _clearAll();
-            return;
-          }
-        } else {
-          _firstNumber = _result;
-          _numbers.add(_result);
-        }
+        _firstNumber = _result;
+        _numbers.add(_result);
       } else {
         // Если число начинается с √, вычисляем его значение
         if (_result.startsWith('√')) {
@@ -128,7 +111,7 @@ class _CalculatorState extends State<Calculator> {
           }
           double result = sqrt(number);
           _result = _formatNumber(result);
-          _expression = '√$number = $result';
+          _expression = '√${number.toInt()} =';
           _clearAll();
           return;
         } catch (e) {
@@ -146,36 +129,10 @@ class _CalculatorState extends State<Calculator> {
       _updateExpression();
       _expression += ' =';
 
+      // Обрабатываем первое число
       double result = double.parse(_numbers[0]);
-      for (int i = 1; i < _numbers.length; i++) {
-        double number = double.parse(_numbers[i]);
-        String operation = _operations[i - 1];
 
-        switch (operation) {
-          case '+':
-            result += number;
-            break;
-          case '-':
-            result -= number;
-            break;
-          case '×':
-            result *= number;
-            break;
-          case '÷':
-            if (number == 0) {
-              _result = 'Ошибка';
-              _clearAll();
-              return;
-            }
-            result /= number;
-            break;
-          case '%':
-            result *= (number / 100);
-            break;
-        }
-      }
-
-      // Добавляем последнее число и операцию
+      // Обрабатываем последнее число
       double lastNumber;
       if (currentNumber.endsWith('%')) {
         lastNumber = double.parse(currentNumber.replaceAll('%', ''));

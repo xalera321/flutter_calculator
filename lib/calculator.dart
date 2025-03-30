@@ -145,15 +145,12 @@ class _CalculatorState extends State<Calculator> {
         // Если первое число - процент, нам нужно дождаться второго числа
         double percentValue =
             double.parse(_numbers[0].substring(0, _numbers[0].length - 1));
-        // Получаем второе число
+        // Получаем второе число (текущее число)
         double nextNumber;
-        if (_numbers[1].startsWith('√')) {
-          nextNumber = sqrt(double.parse(_numbers[1].substring(1)));
-        } else if (_numbers[1].endsWith('%')) {
-          nextNumber =
-              double.parse(_numbers[1].substring(0, _numbers[1].length - 1));
+        if (currentNumber.startsWith('√')) {
+          nextNumber = sqrt(double.parse(currentNumber.substring(1)));
         } else {
-          nextNumber = double.parse(_numbers[1]);
+          nextNumber = double.parse(currentNumber);
         }
         // Вычисляем процент от второго числа
         result = nextNumber;
@@ -182,10 +179,6 @@ class _CalculatorState extends State<Calculator> {
           default:
             result = nextNumber + percentAmount;
         }
-
-        // Пропускаем следующую итерацию, так как мы уже обработали оба числа
-        _numbers.removeAt(1);
-        _operations.removeAt(0);
       } else {
         result = double.parse(_numbers[0]);
       }

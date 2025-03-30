@@ -4,7 +4,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 
 class DocumentationService {
   static const String _documentationUrl =
-      'https://your-cdn-url.com/calculator_documentation.md';
+      'https://xalera321.github.io/flutter_calculator/docs/calculator_documentation.md';
 
   Future<String> getDocumentation() async {
     try {
@@ -68,46 +68,45 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
           ),
         ],
       ),
-      body:
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : _error != null
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
               ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Ошибка загрузки документации:',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      _error!,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _loadDocumentation,
-                      child: const Text('Повторить'),
-                    ),
-                  ],
-                ),
-              )
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Ошибка загрузки документации:',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _error!,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _loadDocumentation,
+                        child: const Text('Повторить'),
+                      ),
+                    ],
+                  ),
+                )
               : Markdown(
-                data: _content,
-                selectable: true,
-                styleSheet: MarkdownStyleSheet(
-                  h1: Theme.of(context).textTheme.headlineLarge,
-                  h2: Theme.of(context).textTheme.headlineMedium,
-                  h3: Theme.of(context).textTheme.headlineSmall,
-                  p: Theme.of(context).textTheme.bodyLarge,
-                  code: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    backgroundColor: Colors.grey[200],
-                    fontFamily: 'monospace',
+                  data: _content,
+                  selectable: true,
+                  styleSheet: MarkdownStyleSheet(
+                    h1: Theme.of(context).textTheme.headlineLarge,
+                    h2: Theme.of(context).textTheme.headlineMedium,
+                    h3: Theme.of(context).textTheme.headlineSmall,
+                    p: Theme.of(context).textTheme.bodyLarge,
+                    code: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          backgroundColor: Colors.grey[200],
+                          fontFamily: 'monospace',
+                        ),
                   ),
                 ),
-              ),
     );
   }
 }

@@ -26,8 +26,10 @@ class _CalculatorState extends State<Calculator> {
         _result = _isNegative ? '-$number' : number;
         _shouldClearDisplay = false;
       } else {
-        if (_result == '0' || _result == '-' || _result == '√') {
+        if (_result == '0' || _result == '-') {
           _result = _isNegative ? '-$number' : number;
+        } else if (_result == '√') {
+          _result = '√$number';
         } else {
           _result += number;
         }

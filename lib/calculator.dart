@@ -73,7 +73,19 @@ class _CalculatorState extends State<Calculator> {
   void _updateExpression() {
     String expression = '';
     for (int i = 0; i < _numbers.length; i++) {
-      expression += _numbers[i];
+      if (_numbers[i].startsWith('√')) {
+        try {
+          double number = double.parse(_numbers[i].substring(1));
+          if (number < 0) {
+            throw Exception('Отрицательное число под корнем');
+          }
+          expression += '√${number.toInt()}';
+        } catch (e) {
+          expression += _numbers[i];
+        }
+      } else {
+        expression += _numbers[i];
+      }
       if (i < _operations.length) {
         expression += ' ${_operations[i]} ';
       }
@@ -114,7 +126,58 @@ class _CalculatorState extends State<Calculator> {
       _expression += ' =';
 
       // Обрабатываем первое число
-      double result = double.parse(_numbers[0]);
+      double result;
+      if (_numbers[0].startsWith('√')) {
+        double number = double.parse(_numbers[0].substring(1));
+        if (number < 0) {
+          _result = 'Ошибка';
+          _clearAll();
+          return;
+        }
+        result = sqrt(number);
+      } else {
+        result = double.parse(_numbers[0]);
+      }
+
+      // Обрабатываем все числа и операции
+      for (int i = 1; i < _numbers.length; i++) {
+        double number;
+        if (_numbers[i].startsWith('√')) {
+          number = double.parse(_numbers[i].substring(1));
+          if (number < 0) {
+            _result = 'Ошибка';
+            _clearAll();
+            return;
+          }
+          number = sqrt(number);
+        } else {
+          number = double.parse(_numbers[i]);
+        }
+        String operation = _operations[i - 1];
+
+        switch (operation) {
+          case '+':
+            result += number;
+            break;
+          case '-':
+            result -= number;
+            break;
+          case '×':
+            result *= number;
+            break;
+          case '÷':
+            if (number == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result /= number;
+            break;
+          case '%':
+            result += (result * number / 100);
+            break;
+        }
+      }
 
       // Обрабатываем последнее число
       double lastNumber;

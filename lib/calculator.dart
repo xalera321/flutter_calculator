@@ -277,7 +277,7 @@ class _CalculatorState extends State<Calculator> {
         double result = sqrt(number);
         setState(() {
           _result = _formatNumber(result);
-          _expression = '√$number = $result';
+          _expression = '√${number.toInt()} =';
           _clearAll();
         });
         return;

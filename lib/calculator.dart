@@ -72,7 +72,7 @@ class _CalculatorState extends State<Calculator> {
     }
 
     setState(() {
-      _numbers.add(_result);
+      String currentNumber = _result;
       _updateExpression();
       _expression += ' =';
 
@@ -103,6 +103,33 @@ class _CalculatorState extends State<Calculator> {
             result *= (number / 100);
             break;
         }
+      }
+
+      // Добавляем последнее число и операцию
+      double lastNumber = double.parse(currentNumber);
+      String lastOperation = _operations.last;
+
+      switch (lastOperation) {
+        case '+':
+          result += lastNumber;
+          break;
+        case '-':
+          result -= lastNumber;
+          break;
+        case '×':
+          result *= lastNumber;
+          break;
+        case '÷':
+          if (lastNumber == 0) {
+            _result = 'Ошибка';
+            _clearAll();
+            return;
+          }
+          result /= lastNumber;
+          break;
+        case '%':
+          result *= (lastNumber / 100);
+          break;
       }
 
       _result = _formatNumber(result);

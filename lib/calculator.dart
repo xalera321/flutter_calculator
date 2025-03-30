@@ -141,6 +141,8 @@ class _CalculatorState extends State<Calculator> {
           return;
         }
         result = sqrt(number);
+      } else if (_numbers[0].endsWith('%')) {
+        result = double.parse(_numbers[0].substring(0, _numbers[0].length - 1));
       } else {
         result = double.parse(_numbers[0]);
       }

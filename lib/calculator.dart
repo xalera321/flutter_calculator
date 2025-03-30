@@ -16,7 +16,8 @@ class _CalculatorState extends State<Calculator> {
   String? _operation;
   String? _firstNumber;
   bool _shouldClearDisplay = false;
-  String _currentNumber = '';
+  List<String> _numbers = [];
+  List<String> _operations = [];
 
   void _onNumberPressed(String number) {
     setState(() {
@@ -30,6 +31,7 @@ class _CalculatorState extends State<Calculator> {
           _result += number;
         }
       }
+      _updateExpression();
     });
   }
 
@@ -37,11 +39,31 @@ class _CalculatorState extends State<Calculator> {
     if (_result.isEmpty) return;
 
     setState(() {
+      if (_firstNumber == null) {
+        _firstNumber = _result;
+        _numbers.add(_result);
+      } else {
+        _numbers.add(_result);
+      }
       _operation = operation;
-      _firstNumber = _result;
+      _operations.add(operation);
       _result = '';
-      _expression = '$_firstNumber $_operation';
+      _updateExpression();
     });
+  }
+
+  void _updateExpression() {
+    String expression = '';
+    for (int i = 0; i < _numbers.length; i++) {
+      expression += _numbers[i];
+      if (i < _operations.length) {
+        expression += ' ${_operations[i]} ';
+      }
+    }
+    if (_result.isNotEmpty) {
+      expression += _result;
+    }
+    _expression = expression;
   }
 
   void _calculateResult() {
@@ -50,43 +72,50 @@ class _CalculatorState extends State<Calculator> {
     }
 
     setState(() {
-      _expression = '$_firstNumber $_operation $_result =';
-      double result;
-      double first = double.parse(_firstNumber!);
-      double second = double.parse(_result);
+      _numbers.add(_result);
+      _updateExpression();
+      _expression += ' =';
 
-      switch (_operation) {
-        case '+':
-          result = first + second;
-          break;
-        case '-':
-          result = first - second;
-          break;
-        case '×':
-          result = first * second;
-          break;
-        case '÷':
-          if (second == 0) {
-            _result = 'Ошибка';
-            _firstNumber = null;
-            _operation = null;
-            _expression = '';
-            return;
-          }
-          result = first / second;
-          break;
-        case '%':
-          result = first * (second / 100);
-          break;
-        default:
-          return;
+      double result = double.parse(_numbers[0]);
+      for (int i = 1; i < _numbers.length; i++) {
+        double number = double.parse(_numbers[i]);
+        String operation = _operations[i - 1];
+
+        switch (operation) {
+          case '+':
+            result += number;
+            break;
+          case '-':
+            result -= number;
+            break;
+          case '×':
+            result *= number;
+            break;
+          case '÷':
+            if (number == 0) {
+              _result = 'Ошибка';
+              _clearAll();
+              return;
+            }
+            result /= number;
+            break;
+          case '%':
+            result *= (number / 100);
+            break;
+        }
       }
 
       _result = _formatNumber(result);
-      _firstNumber = null;
-      _operation = null;
-      _expression = '';
+      _clearAll();
     });
+  }
+
+  void _clearAll() {
+    _firstNumber = null;
+    _operation = null;
+    _numbers.clear();
+    _operations.clear();
+    _shouldClearDisplay = true;
   }
 
   String _formatNumber(double number) {
@@ -111,9 +140,7 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       _result = '0';
       _expression = '';
-      _operation = null;
-      _firstNumber = null;
-      _shouldClearDisplay = false;
+      _clearAll();
     });
   }
 
@@ -121,7 +148,7 @@ class _CalculatorState extends State<Calculator> {
     if (!_result.contains('.')) {
       setState(() {
         _result += '.';
-        _expression = _result;
+        _updateExpression();
       });
     }
   }
@@ -131,16 +158,14 @@ class _CalculatorState extends State<Calculator> {
 
     setState(() {
       if (_operation != null) {
-        // Если есть операция, добавляем % к текущему числу
         _result += '%';
-        _expression = _result;
+        _updateExpression();
       } else {
-        // Если нет операции, вычисляем процент от текущего результата
         try {
           double number = double.parse(_result);
           double result = number / 100;
           _result = _formatNumber(result);
-          _expression = _result;
+          _updateExpression();
         } catch (e) {
           _result = 'Ошибка';
           _expression = '';

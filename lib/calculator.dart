@@ -185,7 +185,8 @@ class _CalculatorState extends State<Calculator> {
       // Обрабатываем последнее число
       double lastNumber;
       if (currentNumber.endsWith('%')) {
-        lastNumber = double.parse(currentNumber.replaceAll('%', ''));
+        lastNumber =
+            double.parse(currentNumber.substring(0, currentNumber.length - 1));
         String lastOperation = _operations.last;
         switch (lastOperation) {
           case '+':

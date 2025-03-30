@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:markdown/markdown.dart' as md;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DocumentationService {
@@ -52,29 +51,6 @@ class DocumentationService {
   }
 }
 
-class CustomElementBuilder extends MarkdownElementBuilder {
-  final BoxDecoration style;
-  final EdgeInsets padding;
-
-  CustomElementBuilder({
-    required this.style,
-    required this.padding,
-  });
-
-  @override
-  Widget visitElementAfter(md.Element element, TextStyle? preferredStyle) {
-    return Container(
-      decoration: style,
-      padding: padding,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: Text(
-        element.textContent,
-        style: preferredStyle,
-      ),
-    );
-  }
-}
-
 class DocumentationScreen extends StatefulWidget {
   const DocumentationScreen({super.key});
 
@@ -83,7 +59,7 @@ class DocumentationScreen extends StatefulWidget {
 }
 
 class _DocumentationScreenState extends State<DocumentationScreen> {
-  final DocumentationService _documentationService = DocumentationService();
+  final DocumentationService _service = DocumentationService();
   String _content = '';
   bool _isLoading = true;
   String? _error;
@@ -103,7 +79,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
     });
 
     try {
-      final content = await _documentationService.getDocumentation();
+      final content = await _service.getDocumentation();
       if (mounted) {
         setState(() {
           _content = content;
@@ -190,46 +166,7 @@ class _DocumentationScreenState extends State<DocumentationScreen> {
                           color: Colors.white,
                           backgroundColor: Colors.grey,
                         ),
-                        codeblockDecoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        blockquote: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                          fontStyle: FontStyle.italic,
-                        ),
-                        blockquoteDecoration: BoxDecoration(
-                          color: Colors.grey[800],
-                          borderRadius: BorderRadius.circular(4),
-                        ),
                       ),
-                      builders: {
-                        'h1': CustomElementBuilder(
-                          style: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                        ),
-                        'h2': CustomElementBuilder(
-                          style: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                        ),
-                        'h3': CustomElementBuilder(
-                          style: BoxDecoration(
-                            color: Colors.grey[800],
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                        ),
-                      },
                     ),
                   ),
                 ),

@@ -57,10 +57,43 @@ class _CalculatorState extends State<Calculator> {
 
     setState(() {
       if (_firstNumber == null) {
-        _firstNumber = _result;
-        _numbers.add(_result);
+        // Если число начинается с √, вычисляем его значение
+        if (_result.startsWith('√')) {
+          try {
+            double number = double.parse(_result.substring(1));
+            if (number < 0) {
+              throw Exception('Отрицательное число под корнем');
+            }
+            _firstNumber = sqrt(number).toString();
+            _numbers.add(_firstNumber!);
+          } catch (e) {
+            _result = 'Ошибка';
+            _expression = '';
+            _clearAll();
+            return;
+          }
+        } else {
+          _firstNumber = _result;
+          _numbers.add(_result);
+        }
       } else {
-        _numbers.add(_result);
+        // Если число начинается с √, вычисляем его значение
+        if (_result.startsWith('√')) {
+          try {
+            double number = double.parse(_result.substring(1));
+            if (number < 0) {
+              throw Exception('Отрицательное число под корнем');
+            }
+            _numbers.add(sqrt(number).toString());
+          } catch (e) {
+            _result = 'Ошибка';
+            _expression = '';
+            _clearAll();
+            return;
+          }
+        } else {
+          _numbers.add(_result);
+        }
       }
       _operation = operation;
       _operations.add(operation);
